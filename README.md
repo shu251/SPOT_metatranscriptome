@@ -6,8 +6,9 @@ Brief description of methods for sequence QC, assembly, annotation, and transcri
 Contact: sarah.hu[at]usc.edu
 
 ## Available data
-- SRA BioProject: PRJNA391503
-- Zenodo: 10.5281/zenodo.846380
+Raw fastq files available at SRA BioProject: PRJNA391503
+
+Data files available at Zenodo: 10.5281/zenodo.846380
 - Combined_reference.fa - Custom database (nucleotide)
 - Combined_reference_pep.fa - Custom database (amino acid)
 - alldepths.fa.gz - contigs
@@ -129,8 +130,8 @@ Output file from the python jupyter notebook included: "Raw_Counts_ByTaxa_Common
 ![CCA](https://github.com/shu251/figs/blob/master/CCA_SPOTmetaT.png)
 
 ## Contributors
-Jay Liu
-Harriet Alexander
+- Jay Liu
+- Harriet Alexander
 
 ## Citations
 
