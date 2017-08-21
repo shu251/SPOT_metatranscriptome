@@ -6,20 +6,20 @@ Brief description of methods for sequence QC, assembly, annotation, and transcri
 Contact: sarah.hu[at]usc.edu
 
 ## Available data
-SRA BioProject: PRJNA391503
-Zenodo: 10.5281/zenodo.846380
-Combined_reference.fa - Custom database (nucleotide)
-Combined_reference_pep.fa - Custom database (amino acid)
-alldepths.fa.gz - contigs
-results.clstr - ortholog cluster output
-contigID_key_depth.txt - list of contigs for each depth
-RawCounts_byContigs.csv - Output count files from Salmon
-RawCounts_bycontig_annotated.csv - Output count file with annotation information
-TaxaName_bycontig.txt - taxonomy annotation by contig
-Ortho_groups_by_taxa_binary.csv - (UpSetR input) ortholog groups by taxa
-Ortho_by_depth_Binary.csv - (UpSetR input) ortholog groups by depth
-AnnotationInfo_bycontig.txt - Annotation information for each contig
-Raw_Counts_ByTaxa_CommonKO.csv - Counts of shared/common by taxa (CCA input)
+- SRA BioProject: PRJNA391503
+- Zenodo: 10.5281/zenodo.846380
+- Combined_reference.fa - Custom database (nucleotide)
+- Combined_reference_pep.fa - Custom database (amino acid)
+- alldepths.fa.gz - contigs
+- results.clstr - ortholog cluster output
+- contigID_key_depth.txt - list of contigs for each depth
+- RawCounts_byContigs.csv - Output count files from Salmon
+- RawCounts_bycontig_annotated.csv - Output count file with annotation information
+- TaxaName_bycontig.txt - taxonomy annotation by contig
+- Ortho_groups_by_taxa_binary.csv - (UpSetR input) ortholog groups by taxa
+- Ortho_by_depth_Binary.csv - (UpSetR input) ortholog groups by depth
+- AnnotationInfo_bycontig.txt - Annotation information for each contig
+- Raw_Counts_ByTaxa_CommonKO.csv - Counts of shared/common by taxa (CCA input)
 
 ## Abbreviated materials and methods (see Hu et al. 2017)
 ### Sequence QC
