@@ -1,0 +1,26 @@
+#Rscript to compile quant.count files output from salmon
+#location: /galadriel/sarah/metaT_SPOT_032017/
+
+#(1) Imports quant.count files (salmon output).
+#(2) Assigns variable label for sample number
+#(3) create large file with all
+#(4) output as "RawCounts_byContigs.csv"
+
+count_150m_25<-read.delim("SPOT_150m_25_quant.counts", header=TRUE, sep="\t", row.names=NULL); count_150m_25$variable <- "Sample25"
+count_150m_26<-read.delim("SPOT_150m_26_quant.counts", header=TRUE, sep="\t", row.names=NULL); count_150m_26$variable <- "Sample26"
+count_150m_27<-read.delim("SPOT_150m_27_quant.counts", header=TRUE, sep="\t", row.names=NULL); count_150m_27$variable <- "Sample27"
+count_890m_28<-read.delim("SPOT_890m_28_quant.counts", header=TRUE, sep="\t", row.names=NULL); count_890m_28$variable <- "Sample28"
+count_890m_29<-read.delim("SPOT_890m_29_quant.counts", header=TRUE, sep="\t", row.names=NULL); count_890m_29$variable <- "Sample29"
+count_890m_30<-read.delim("SPOT_890m_30_quant.counts", header=TRUE, sep="\t", row.names=NULL); count_890m_30$variable <- "Sample30"
+count_890m_31<-read.delim("SPOT_890m_31_quant.counts", header=TRUE, sep="\t", row.names=NULL); count_890m_31$variable <- "Sample31"
+count_surface_10<-read.delim("SPOT_surface_10_quant.counts", header=TRUE, sep="\t", row.names=NULL); count_surface_10$variable <- "Sample10"
+count_surface_11<-read.delim("SPOT_surface_11_quant.counts", header=TRUE, sep="\t", row.names=NULL); count_surface_11$variable <- "Sample11"
+count_surface_12<-read.delim("SPOT_surface_12_quant.counts", header=TRUE, sep="\t", row.names=NULL); count_surface_12$variable <- "Sample12"
+count_surface_7<-read.delim("SPOT_surface_7_quant.counts", header=TRUE, sep="\t", row.names=NULL); count_surface_7$variable <- "Sample7"
+count_surface_8<-read.delim("SPOT_surface_8_quant.counts", header=TRUE, sep="\t", row.names=NULL); count_surface_8$variable <- "Sample8"
+count_surface_9<-read.delim("SPOT_surface_9_quant.counts", header=TRUE, sep="\t", row.names=NULL); count_surface_9$variable <- "Sample9"
+
+allcounts<-rbind(count_150m_25,count_150m_26,count_150m_27,count_890m_28,count_890m_29,count_890m_30,count_890m_31,count_surface_10,count_surface_11,count_surface_12,count_surface_7,count_surface_8,count_surface_9)
+write.csv(allcounts, file="RawCounts_byContigs.csv", row.names=FALSE)
+
+#End last updated 032017
