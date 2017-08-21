@@ -1,5 +1,8 @@
 # Code & data compilation information for paper in review
-### Sarah K. Hu, Zhenfeng Liu, Harriet Alexander, Victoria Campbell, Paige Connell, Karla B. Heidelberg, Sonya Dyhrman, & David A. Caron. Shifting metabolic priorities among key protistan taxonomic groups within and below the euphotic zone. Submitted July 2017.
+[![DOI](https://zenodo.org/badge/100997028.svg)](https://zenodo.org/badge/latestdoi/100997028)
+
+
+Sarah K. Hu, Zhenfeng Liu, Harriet Alexander, Victoria Campbell, Paige Connell, Karla B. Heidelberg, Sonya Dyhrman, & David A. Caron. Shifting metabolic priorities among key protistan taxonomic groups within and below the euphotic zone. Submitted July 2017.
 
 Brief description of methods for sequence QC, assembly, annotation, and transcript abundance estimates, followed by review of the R and python scripts used for data compilation, normalization, and code for data visualization. All figures for this paper were made in R.
 
