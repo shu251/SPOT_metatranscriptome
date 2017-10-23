@@ -1,8 +1,6 @@
 # Code & data compilation information for paper in review
-[![DOI](https://zenodo.org/badge/100997028.svg)](https://zenodo.org/badge/latestdoi/100997028)
 
-
-Sarah K. Hu, Zhenfeng Liu, Harriet Alexander, Victoria Campbell, Paige Connell, Karla B. Heidelberg, Sonya Dyhrman, & David A. Caron. Shifting metabolic priorities among key protistan taxonomic groups within and below the euphotic zone. Submitted July 2017.
+Sarah K. Hu, Zhenfeng Liu, Harriet Alexander, Victoria Campbell, Paige Connell, Karla B. Heidelberg, Sonya Dyhrman, & David A. Caron. Shifting metabolic priorities among key protistan taxonomic groups within and below the euphotic zone. [Submitted]
 
 Brief description of methods for sequence QC, assembly, annotation, and transcript abundance estimates, followed by review of the R and python scripts used for data compilation, normalization, and code for data visualization. All figures for this paper were made in R.
 
@@ -10,42 +8,68 @@ Contact: sarah.hu[at]usc.edu
 
 ## Available data
 Raw fastq files available at SRA BioProject: PRJNA391503
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.846380.svg)](https://doi.org/10.5281/zenodo.846380)
 
-Data files available at Zenodo: 10.5281/zenodo.846380
-- Combined_reference.fa - Custom database (nucleotide)
-- Combined_reference_pep.fa - Custom database (amino acid)
-- alldepths.fa.gz - contigs
-- results.clstr - ortholog cluster output
-- contigID_key_depth.txt - list of contigs for each depth
-- RawCounts_byContigs.csv - Output count files from Salmon
-- RawCounts_bycontig_annotated.csv - Output count file with annotation information
-- TaxaName_bycontig.txt - taxonomy annotation by contig
-- Ortho_groups_by_taxa_binary.csv - (UpSetR input) ortholog groups by taxa
-- Ortho_by_depth_Binary.csv - (UpSetR input) ortholog groups by depth
-- AnnotationInfo_bycontig.txt - Annotation information for each contig
-- Raw_Counts_ByTaxa_CommonKO.csv - Counts of shared/common by taxa (CCA input)
+* Combined_reference.fa - Custom database (nucleotide)
+* Combined_reference_pep.fa - Custom database (amino acid)
+* alldepths.fa.gz - contigs
+* results.clstr - ortholog cluster output
+* contigID_key_depth.txt - list of contigs for each depth
+* RawCounts_byContigs.csv - Output count files from Salmon
+* RawCounts_bycontig_annotated.csv - Output count file with annotation information
+* TaxaName_bycontig.txt - taxonomy annotation by contig
+* miTags_alldepths.txt - miTag taxonomy table
+* Ortho_groups_by_taxa_binary.csv - (UpSetR input) ortholog groups by taxa
+* Ortho_by_depth_Binary.csv - (UpSetR input) ortholog groups by depth
+* Annotation_withKO_ids.txt - Annotations for each read
+* AnnotationInfo_bycontig.txt - Annotation information for each contig
+* Raw_Counts_ByTaxa_CommonKO.csv - Counts of shared/common by taxa (CCA input)
+* test_file_05022017.csv - test dataset
 
-## Abbreviated materials and methods (see Hu et al. 2017)
+## Scripts in this repository
+* Parse_and_Compile_Data_SPOTmetaT.ipynb - compiles raw data from annotation and transcript abundance estimation
+* MetaT_data_compile_10172017.ipynb .r - R script that continues compilation of raw data, performs normalization, and generates all plots
+* miTag_R.ipynb .r - manual taxonomic curation and generation of summary tables and figures from miTag results
+
+## Abbreviated methods (see Hu et al. 2017)
 ### Sequence QC
 Trim raw fastq sequences using Trimmomatic. TruSeq3-PE-2.fa was customized to include string of “AAA’s” and “TTT’s” to removal residual fragments. This is a known artifact from some polyA tail selection library preparation practices (personal communication KAPA Biosystems).
 ```
 java -jar /usr/local/bioinf/Trimmomatic-0.32/trimmomatic-0.32.jar PE [list of fastq files, R1, R2, SE] ILLUMINACLIP:/usr/local/bioinf/Trimmomatic-0.32/adapters/TruSeq3-PE-2.fa:2:40:15 LEADING:10 TRAILING:10 SLIDINGWINDOW:25:10 MINLEN:50
 ```
-Trinity (2.1.1) and in-house script to count & remove ERCC
+####Trinity (2.1.1) and in-house script to count & remove ERCC
 ```
 align_and_estimtate_abundance.pl --transcripts ERCCA92 --est_method RSEM --align_method bowtie -- trinity_mode --prep_reference --output_dir
 #INSERT in-house script to remove excess ERCC seqs
 ```
-Align "bleed-through" rRNA using SortMeRNA
+###Separate "bleed-through" rRNA and mRNA using SortMeRNA
 ```
-merge-paired-reads.sh [R1 PE fastq file] [R1 PE fastq file] [output fastq file for merged reads]
+merge-paired-reads.sh [R1 PE fast#q file] [R1 PE fastq file] [output fastq file for merged reads]
 # Example code for paired end reads:
 sortmerna --ref /usr/local/bioinf/sortmerna-2.0-linux-64/rRNA_databases/silva-bac-16s-id90.fasta,./index/silva-bac-16s-db:\/usr/local/bioinf/sortmerna-2.0-linux-64/rRNA_databases/silva-bac-23s-id98.fasta,./index/silva-bac-23s-db:\/usr/local/bioinf/sortmerna-2.0-linux-64/rRNA_databases/silva-arc-16s-id95.fasta,./index/silva-arc-16s-db:\/usr/local/bioinf/sortmerna-2.0-linux-64/rRNA_databases/silva-arc-23s-id98.fasta,./index/silva-arc-23s-db:\/usr/local/bioinf/sortmerna-2.0-linux-64/rRNA_databases/silva-euk-18s-id95.fasta,./index/silva-euk-18s-db:\/usr/local/bioinf/sortmerna-2.0-linux-64/rRNA_databases/silva-euk-28s-id98.fasta,./index/silva-euk-28s --reads [merged fastq file from above] —sam --fastx --aligned [output file of rRNA reads aligned to databases] --other [output for reads that did not hit database] --log -v --paired_in --best 1
+
 # Example code for single end reads:
 sortmerna --ref /usr/local/bioinf/sortmerna-2.0-linux-64/rRNA_databases/silva-bac-16s-id90.fasta,./index/silva-bac-16s-db:\/usr/local/bioinf/sortmerna-2.0-linux-64/rRNA_databases/silva-bac-23s-id98.fasta,./index/silva-bac-23s-db:\/usr/local/bioinf/sortmerna-2.0-linux-64/rRNA_databases/silva-arc-16s-id95.fasta,./index/silva-arc-16s-db:\/usr/local/bioinf/sortmerna-2.0-linux-64/rRNA_databases/silva-arc-23s-id98.fasta,./index/silva-arc-23s-db:\/usr/local/bioinf/sortmerna-2.0-linux-64/rRNA_databases/silva-euk-18s-id95.fasta,./index/silva-euk-18s-db:\/usr/local/bioinf/sortmerna-2.0-linux-64/rRNA_databases/silva-euk-28s-id98.fasta,./index/silva-euk-28s --reads [SE fastq file] --sam --fastx --aligned [output file of rRNA reads aligned to databases] --other [output for reads that did not hit database] --log -v --paired_in --best 1
+```
+### miTag analysis
 
-## Optional step to assign taxonomy in QIIME
-assign_taxonomy.py -i [PEorSEfastqfileshere] -t [Silva119 taxonomy DB] -r [Silva119 reference database] -m uclust —min_consensus_fraction 0.51 —uclust_max_accepts 3 —similarity 0.9
+Unmerge rRNA PE reads. Assign taxonomy using QIIME-1's parallel assign taxonomy script that uses uclust.
+
+```
+#Unmerge
+bash /usr/local/bioinf/sortmerna-2.0-linux-64/unmerge-paired-reads.sh [output file of rRNA reads aligned to databases] [rRNA R1 fastq] [rRNA R2 fastq] 
+
+#Use R1 and SE reads to assign taxonomy. Merged paired end reads is ideal, but sequencing was not designed for merged PE reads in this experiment. I am using split libraries in QIIME so I can get the sequences in a format to assign taxonomy and run a non-stringent quality check.
+
+split_libraries_fastq.py -i [R1 or SE fastq] -m map.txt --barcode_type 'not-barcoded' --sample_ids [name of sample] -q 15 -n 5 -o out_dir
+mv out_dir/seqs.fna [output fasta file]
+
+parallel_assign_taxonomy_uclust.py -i [output fasta file] -o [out directory with assignment results] -r /beleriand/SILVA_128_QIIME_release/rep_set/rep_set_18S_only/99/99_otus_18S.fasta -t /beleriand/SILVA_128_QIIME_release/taxonomy/18S_only/99/consensus_taxonomy_all_levels.txt --similarity 0.97 --min_consensus_fraction 0.51 -O 4
+```
+
+To plot miTag results, see miTag_R.ipynb. R script that takes output from 'parallel_assign_taxonomy.py' to generating  taxonomic composition plots. Since taxonomy assignment included all domains and taxonomic levels, Rscript includes manual curation of taxonomic identities to simplify plotting.
+
+
 ```
 ### Assembly and ortholog clustering
 Performed de novo sequence assembly (mRNA reads) using MEGAHIT. Ortholog clustering was performed at 75% similarity using uclust.
@@ -86,12 +110,12 @@ GeneMarkS-T/gmst.pl --fnn -faa final.contigs.fa
 Concatenate output .faa sequences and run through GhostKOALA for KEGG annotation (http://www.kegg.jp/ghostkoala/).
 
 ## Data compilation
-Zenodo (10.5281/zenodo.846380) houses raw data that can be downloaded and then run  to re-create all figures.
+Zenodo (10.5281/zenodo.846380) houses raw data that can be downloaded and then run to re-create all figures.
 
 ### Parse_and_Compile_Data_SPOTmetaT.ipynb
 Code required to run ahead of R script. Takes raw count information and annotation data and compiles. Output files can then be input into the R script: MetaT_data_compile_plot.ipynb.
 
-### MetaT_data_compile_plot.ipynb
+### MetaT_data_compile_10172017.ipynb
 Script used to generate all figures. Many figures were processed further using InkScape. See "test_file_05022017.csv" to run through small subset of data.
 
 Required R packages
@@ -175,4 +199,5 @@ Tang S, Lomsadze A, Borodovsky M. (2015). Identification of protein coding regio
 Wickham H (2009). ggplot2: Elegant Graphics for Data Analysis. Springer Publishing Company, Incorporated.
 
 
-## Last Updated 08-21-2017
+## Last Updated 10-23-2017
+
