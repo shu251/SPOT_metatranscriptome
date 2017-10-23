@@ -37,12 +37,12 @@ Trim raw fastq sequences using Trimmomatic. TruSeq3-PE-2.fa was customized to in
 ```
 java -jar /usr/local/bioinf/Trimmomatic-0.32/trimmomatic-0.32.jar PE [list of fastq files, R1, R2, SE] ILLUMINACLIP:/usr/local/bioinf/Trimmomatic-0.32/adapters/TruSeq3-PE-2.fa:2:40:15 LEADING:10 TRAILING:10 SLIDINGWINDOW:25:10 MINLEN:50
 ```
-####Trinity (2.1.1) and in-house script to count & remove ERCC
+#### Trinity (2.1.1) and in-house script to count & remove ERCC
 ```
 align_and_estimtate_abundance.pl --transcripts ERCCA92 --est_method RSEM --align_method bowtie -- trinity_mode --prep_reference --output_dir
 #INSERT in-house script to remove excess ERCC seqs
 ```
-###Separate "bleed-through" rRNA and mRNA using SortMeRNA
+### Separate "bleed-through" rRNA and mRNA using SortMeRNA
 ```
 merge-paired-reads.sh [R1 PE fast#q file] [R1 PE fastq file] [output fastq file for merged reads]
 # Example code for paired end reads:
@@ -70,7 +70,6 @@ parallel_assign_taxonomy_uclust.py -i [output fasta file] -o [out directory with
 To plot miTag results, see miTag_R.ipynb. R script that takes output from 'parallel_assign_taxonomy.py' to generating  taxonomic composition plots. Since taxonomy assignment included all domains and taxonomic levels, Rscript includes manual curation of taxonomic identities to simplify plotting.
 
 
-```
 ### Assembly and ortholog clustering
 Performed de novo sequence assembly (mRNA reads) using MEGAHIT. Ortholog clustering was performed at 75% similarity using uclust.
 ```
@@ -79,11 +78,11 @@ megahit -t 16 -1 [list of R1 PE reads] -2 [list of R2 PE reads] -r [list of SE r
 
 #Ortholog clustering
 uclust --input alldepths.fa --uc results.clstr --id 0.75
-
-#Output contigs and ortholog clustering available (10.5281/zenodo.846380)
 ```
+
 ### Transcript abundance estimates using Salmon
 Index assembled reads and perform transcript quantification.
+
 ```
 #index
 salmon index -t [contig file] -i alldepths_index --type quasi -k 31
@@ -110,7 +109,7 @@ GeneMarkS-T/gmst.pl --fnn -faa final.contigs.fa
 Concatenate output .faa sequences and run through GhostKOALA for KEGG annotation (http://www.kegg.jp/ghostkoala/).
 
 ## Data compilation
-Zenodo (10.5281/zenodo.846380) houses raw data that can be downloaded and then run to re-create all figures.
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.846380.svg)](https://doi.org/10.5281/zenodo.846380) houses raw data that can be downloaded and then run to re-create all figures.
 
 ### Parse_and_Compile_Data_SPOTmetaT.ipynb
 Code required to run ahead of R script. Takes raw count information and annotation data and compiles. Output files can then be input into the R script: MetaT_data_compile_plot.ipynb.
