@@ -24,13 +24,13 @@ Larger data files available at zenodo [![DOI](https://zenodo.org/badge/DOI/10.52
 * Ortho_by_depth_Binary.csv - (UpSetR input) ortholog groups by depth
 * Annotation_withKO_ids.txt - Annotations for each read
 * AnnotationInfo_bycontig.txt - Annotation information for each contig
-* AnnotationInfo_byPath.txt - txt files used in R analysis
 * Raw_Counts_ByTaxa_CommonKO.csv - Counts of shared/common by taxa (CCA input)
 * test_file_05022017.csv - test dataset
 
 ## Scripts in this repository
 * Rscript_compile_salmon_counts.Rscript - compiles transcript abundance estimates from salmon output
 * Parse_and_Compile_Data_SPOTmetaT.ipynb - compiles raw data from annotation and transcript abundance estimation
+* AnnotationInfo_byPath.txt - txt files used in R analysis
 * MetaT_data_compile_03072018.ipynb .r - R script that continues compilation of raw data, performs normalization, and generates all plots
 * miTag_R.ipynb .r - manual taxonomic curation and generation of summary tables and figures from miTag results (supplementary)
 * remove_ERCC_reads_PE.pl[SE.pl] - custom PERL script to remove ERCC spike-in reads
@@ -147,7 +147,7 @@ All figures generated in R, then downstream customization performed in InkScape 
 ### Barplot (Fig 2)
 CPM was averages over replicates at each sample. Manual taxonomic assignments were added to aid data visualization (see supplementary material).
 
-![Barplot](https://github.com/shu251/figs/blob/master/Fig2.eps)
+![Barplot](https://github.com/shu251/figs/blob/master/Fig2.png)
 
 ### UpSetR plot (Fig 3)
 UpsetR package generates easier to digest venn diagrams or "intersecting sets" (http://www.biorxiv.org/content/early/2017/03/25/120600). Results from ortholog group clustering (uclust 75%) were used here to find the distribution of contigs from all depths.
@@ -164,12 +164,12 @@ Using "ggplot2" and "ggtern" R packages (http://www.ggtern.com/), I created the 
 ## Ternary plot for each taxonomic group (Fig 6)
 Raw data first separated by each taxonomic group and normalized using edgeR separately.
 
-![TernaryTaxplot(https://github.com/shu251/figs/blob/master/Fig6_triplotTax.pdf)
+![TernaryTaxplot(https://github.com/shu251/figs/blob/master/Fig6_triplotTax.png)
 
 ### CCA plot (Fig 5)
 Output file from the python jupyter notebook included: "Raw_Counts_ByTaxa_CommonKO.csv". This file includes KEGG identifiers (K0s) that were COMMON across all taxonomic groups. Common K0 IDs are normalized (using edgeR again) and then CCA was computed using the "vegan" R package.
 
-![CCA](https://github.com/shu251/figs/blob/master/Fig5_CCA.eps)
+![CCA](https://github.com/shu251/figs/blob/master/Fig5_CCA.png)
 
 ### Statistical analysis to evaluate transcript abundances by depth and taxonomic group
 Two sections that take dataframes from ternary plot generation and perform ANOVA and post doc Tukey test. First for the whole community and then for each taxonomic group. Second section uses data was normalized by each taxonomic group first.
