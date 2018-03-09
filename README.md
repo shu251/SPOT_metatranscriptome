@@ -8,7 +8,8 @@ Contact: sarah.hu[at]usc.edu
 
 ## Available data
 Raw fastq files available at SRA BioProject: PRJNA391503
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.846380.svg)](https://doi.org/10.5281/zenodo.846380)
+
+Larger data files available at zenodo [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.846380.svg)](https://doi.org/10.5281/zenodo.846380)
 
 * Combined_reference.fa - Custom database (nucleotide)
 * Combined_reference_pep.fa - Custom database (amino acid)
@@ -23,13 +24,16 @@ Raw fastq files available at SRA BioProject: PRJNA391503
 * Ortho_by_depth_Binary.csv - (UpSetR input) ortholog groups by depth
 * Annotation_withKO_ids.txt - Annotations for each read
 * AnnotationInfo_bycontig.txt - Annotation information for each contig
+* AnnotationInfo_byPath.txt - txt files used in R analysis
 * Raw_Counts_ByTaxa_CommonKO.csv - Counts of shared/common by taxa (CCA input)
 * test_file_05022017.csv - test dataset
 
 ## Scripts in this repository
+* Rscript_compile_salmon_counts.Rscript - compiles transcript abundance estimates from salmon output
 * Parse_and_Compile_Data_SPOTmetaT.ipynb - compiles raw data from annotation and transcript abundance estimation
-* MetaT_data_compile_10172017.ipynb .r - R script that continues compilation of raw data, performs normalization, and generates all plots
-* miTag_R.ipynb .r - manual taxonomic curation and generation of summary tables and figures from miTag results
+* MetaT_data_compile_03072018.ipynb .r - R script that continues compilation of raw data, performs normalization, and generates all plots
+* miTag_R.ipynb .r - manual taxonomic curation and generation of summary tables and figures from miTag results (supplementary)
+* remove_ERCC_reads_PE.pl[SE.pl] - custom PERL script to remove ERCC spike-in reads
 
 ## Abbreviated methods (see Hu et al. 2017)
 ### Sequence QC
@@ -40,7 +44,11 @@ java -jar /usr/local/bioinf/Trimmomatic-0.32/trimmomatic-0.32.jar PE [list of fa
 #### Trinity (2.1.1) and in-house script to count & remove ERCC
 ```
 align_and_estimtate_abundance.pl --transcripts ERCCA92 --est_method RSEM --align_method bowtie -- trinity_mode --prep_reference --output_dir
-#INSERT in-house script to remove excess ERCC seqs
+# Remove ERCC reads with PERL script
+## PE reads
+samtools view [BAM file] | perl remove_ERCC_reads_PE.pl [Read1 fastq] [Read2 fastq] [output read1] [output read2]
+## SE reads
+samtools view [BAM file] | perl remove_ERCC_reads_SE.pl [Read fastq] [output read]
 ```
 ### Separate "bleed-through" rRNA and mRNA using SortMeRNA
 ```
@@ -89,6 +97,8 @@ salmon index -t [contig file] -i alldepths_index --type quasi -k 31
 #transcript abundance estimation
 salmon quant -i alldepths_index -l A -1 [R1 mRNA fastq reads] -2 [R2 mRNA fastq reads] -o output.quant
 ```
+Output from salmon will generate _quant.counts files, run Rscript 'Rscript_compile_salmon_counts.Rscript' to compile. This will output "RawCounts_byContigs.csv" file to be used in downstream analysis. This is also available on zenodo.
+
 ## Annotation
 ### Taxonomy
 First ran blastx against custom database. Any reads that did not hit a reference database were re-run with blastn.
@@ -112,12 +122,12 @@ Concatenate output .faa sequences and run through GhostKOALA for KEGG annotation
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.846380.svg)](https://doi.org/10.5281/zenodo.846380) houses raw data that can be downloaded and then run to re-create all figures.
 
 ### Parse_and_Compile_Data_SPOTmetaT.ipynb
-Code required to run ahead of R script. Takes raw count information and annotation data and compiles. Output files can then be input into the R script: MetaT_data_compile_plot.ipynb.
+Code required to run ahead of R script. Takes raw count information and annotation data and compiles. Output files can then be input into the R script: MetaT_data_compile_03072018.ipynb
 
-### MetaT_data_compile_10172017.ipynb
+### MetaT_data_compile_03072018.ipynb
 Script used to generate all figures. Many figures were processed further using InkScape. See "test_file_05022017.csv" to run through small subset of data.
 
-Required R packages
+To run, start R and make sure these packages are installed:
 ```
 install.packages("edgeR")
 install.packages("plyr")
@@ -128,7 +138,8 @@ install.packages("ggtern")
 install.packages("UpSetR")
 install.packages("vegan")
 ```
-Imports raw count data and performs EdgeR normalization. Resulting transcript counts per million (CPM) tables are joined with annotation data. 
+## EdgeR normalization for whole community.
+Raw data was normalized using the edgeR package. This considered replicates for each depth. Data is normalized a second time for each individual taxonomic group.
 
 ## Figures
 All figures generated in R, then downstream customization performed in InkScape (.svg files).
@@ -136,24 +147,32 @@ All figures generated in R, then downstream customization performed in InkScape 
 ### Barplot (Fig 2)
 CPM was averages over replicates at each sample. Manual taxonomic assignments were added to aid data visualization (see supplementary material).
 
-![Barplot](https://github.com/shu251/figs/blob/master/barplot_SPOTmetaT.png)
+![Barplot](https://github.com/shu251/figs/blob/master/Fig2.eps)
 
 ### UpSetR plot (Fig 3)
 UpsetR package generates easier to digest venn diagrams or "intersecting sets" (http://www.biorxiv.org/content/early/2017/03/25/120600). Results from ortholog group clustering (uclust 75%) were used here to find the distribution of contigs from all depths.
 
 ![UpSetR](https://github.com/shu251/figs/blob/master/upsetR_SPOTmetaT.png)
 
-### Ternary plots (Figs 4 and 6)
-Using "ggplot2" and "ggtern" R packages (http://www.ggtern.com/), I created the 3 axes "triangle plots". This was performed at both the whole community level and for each individual taxonomic group.
+### Ternary plots (Figs 4 & 6)
+Performed from separate data, as the normalization was done once for the whole community and a second time for each taxonomic group. Find code for additional statistical analyses below.
 
+## Ternary plot for whole community  (Fig 4)
+Using "ggplot2" and "ggtern" R packages (http://www.ggtern.com/), I created the 3 axes "triangle plots". This was performed at both the whole community level and for each individual taxonomic group.
 ![Ternaryplot](https://github.com/shu251/figs/blob/master/ternary_SPOTmetaT.png)
 
-Statistical analyses are also included at the end of this script. ANOVAs and post-hoc Tukey HSD (to obtain p-values) were performed to determine significance. 
+## Ternary plot for each taxonomic group (Fig 6)
+Raw data first separated by each taxonomic group and normalized using edgeR separately.
+
+![TernaryTaxplot(https://github.com/shu251/figs/blob/master/Fig6_triplotTax.pdf)
 
 ### CCA plot (Fig 5)
 Output file from the python jupyter notebook included: "Raw_Counts_ByTaxa_CommonKO.csv". This file includes KEGG identifiers (K0s) that were COMMON across all taxonomic groups. Common K0 IDs are normalized (using edgeR again) and then CCA was computed using the "vegan" R package.
 
-![CCA](https://github.com/shu251/figs/blob/master/CCA_SPOTmetaT.png)
+![CCA](https://github.com/shu251/figs/blob/master/Fig5_CCA.eps)
+
+### Statistical analysis to evaluate transcript abundances by depth and taxonomic group
+Two sections that take dataframes from ternary plot generation and perform ANOVA and post doc Tukey test. First for the whole community and then for each taxonomic group. Second section uses data was normalized by each taxonomic group first.
 
 ## Contributors
 - Jay Liu
