@@ -164,7 +164,7 @@ Using "ggplot2" and "ggtern" R packages (http://www.ggtern.com/), I created the 
 ## Ternary plot for each taxonomic group (Fig 6)
 Raw data first separated by each taxonomic group and normalized using edgeR separately.
 
-![TernaryTaxplot(https://github.com/shu251/figs/blob/master/Fig6_triplotTax.png)
+![TernaryTaxplot](https://github.com/shu251/figs/blob/master/Fig6_triplotTax.png)
 
 ### CCA plot (Fig 5)
 Output file from the python jupyter notebook included: "Raw_Counts_ByTaxa_CommonKO.csv". This file includes KEGG identifiers (K0s) that were COMMON across all taxonomic groups. Common K0 IDs are normalized (using edgeR again) and then CCA was computed using the "vegan" R package.
